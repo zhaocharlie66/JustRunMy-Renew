@@ -50,13 +50,15 @@ jobs:
             
       - name: 🐍 安装 Python 依赖
         run: |
-          pip install seleniumbase aiohttp
+          pip install seleniumbase aiohttp requests
           seleniumbase install chromedriver
           
       - name: 🚀 运行续期脚本
         env:
           JUSTRUNMY_EMAIL: ${{ secrets.JUSTRUNMY_EMAIL }}
           JUSTRUNMY_PASSWORD: ${{ secrets.JUSTRUNMY_PASSWORD }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         run: |
           xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" \
             python justrunmy_renew.py
