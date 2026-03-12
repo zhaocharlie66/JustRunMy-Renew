@@ -219,6 +219,10 @@ async function handleTurnstile(page) {
     return false;
 }
 
+const checkExists = async (page) => await page.evaluate(() => {
+    return document.querySelector('input[name="cf-turnstile-response"]') !== null;
+});
+
 // ============================================================
 //  账户登录模块
 // ============================================================
