@@ -1,0 +1,17 @@
+{
+  "name": "justrunmy-renew",
+  "version": "1.0.0",
+  "description": "JustRunMy 自动续期脚本 (Node.js 版本)",
+  "main": "justrunmy_renew.js",
+  "scripts": {
+    "start": "node justrunmy_renew.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "puppeteer": "^22.0.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "author": "",
+  "license": "ISC"
+}
