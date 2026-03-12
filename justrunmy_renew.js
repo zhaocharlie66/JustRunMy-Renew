@@ -153,7 +153,8 @@ async function clickTurnstile(page) {
 
 async function handleTurnstile(page) {
     console.log("🔍 处理 Cloudflare Turnstile 验证...");
-    await sleep(2000);
+    // 初始稍微多等一会，确保 CF 的脚本完全加载完毕
+    await sleep(3000);
 
     const isSolved = async () => await page.evaluate(() => {
         var i = document.querySelector('input[name="cf-turnstile-response"]');
@@ -188,36 +189,35 @@ async function handleTurnstile(page) {
 
     for (let i = 0; i < 3; i++) {
         try { await expandJs(); } catch (e) {}
-        await sleep(500);
+        await sleep(1000);
     }
 
-    for (let attempt = 0; attempt < 6; attempt++) {
+    // 将总尝试次数降为 3 次，避免疯狂连点打断 CF 的内部运算
+    for (let attempt = 0; attempt < 3; attempt++) {
         if (await isSolved()) {
             console.log(`  ✅ Turnstile 通过（第 ${attempt + 1} 次尝试）`);
             return true;
         }
         try { await expandJs(); } catch (e) {}
-        await sleep(300);
+        await sleep(500);
 
         await clickTurnstile(page);
+        console.log(`  ⏳ 已点击，正在等待 Cloudflare 验证结果，这可能需要较长时间...`);
 
-        for (let j = 0; j < 8; j++) {
-            await sleep(500);
+        // 【关键修改】大幅拉长等待时间：每次循环等 1 秒，最多等 20 次，共计 20 秒
+        for (let j = 0; j < 20; j++) {
+            await sleep(1000);
             if (await isSolved()) {
-                console.log(`  ✅ Turnstile 通过（第 ${attempt + 1} 次尝试）`);
+                console.log(`  ✅ Turnstile 通过（第 ${attempt + 1} 次尝试，耗时约 ${j + 1} 秒）`);
                 return true;
             }
         }
-        console.log(`  ⚠️ 第 ${attempt + 1} 次未通过，重试...`);
+        console.log(`  ⚠️ 第 ${attempt + 1} 次点击后等待 20 秒仍未完成验证，准备重试...`);
     }
 
-    console.log("  ❌ Turnstile 6 次均失败");
+    console.log("  ❌ Turnstile 多次尝试均超时或失败");
     return false;
 }
-
-const checkExists = async (page) => await page.evaluate(() => {
-    return document.querySelector('input[name="cf-turnstile-response"]') !== null;
-});
 
 // ============================================================
 //  账户登录模块
