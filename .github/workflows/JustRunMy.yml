@@ -22,7 +22,7 @@ jobs:
       - name: 🟢 设置 Node.js 环境
         uses: actions/setup-node@v4
         with:
-          node-version: '18' # 使用 Node.js 18 或更高版本
+          node-version: '22' # 使用 Node.js 18 或更高版本
           
       - name: 🛡️ 启动 Gost 代理转发 (可选)
         env:
